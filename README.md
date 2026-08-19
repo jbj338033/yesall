@@ -36,6 +36,23 @@ The installer never overwrites an unmanaged file. Re-running it updates only fil
 
 ## Commands
 
+| Shortcut | Agent | Mode |
+| --- | --- | --- |
+| `adr` | Aider | `--yes-always` |
+| `amx` | Amp | `--dangerously-allow-all` |
+| `cdx` | Codex CLI | `--dangerously-bypass-approvals-and-sandbox` |
+| `cld` | Claude Code | `--dangerously-skip-permissions` |
+| `cln` | Cline CLI | `--yolo` |
+| `cpl` | GitHub Copilot CLI | `--allow-all-tools --allow-all-paths --allow-all-urls` |
+| `cur` | Cursor Agent | `--force` |
+| `grk` | Grok Build | `--permission-mode bypassPermissions` |
+| `gse` | Goose | `GOOSE_MODE=auto` |
+| `kir` | Kiro CLI | `chat --trust-all-tools` |
+| `kmi` | Kimi Code | `--auto` |
+| `opc` | OpenCode | permissive config |
+| `qdev` | Amazon Q Developer | `chat --trust-all-tools` |
+| `qwn` | Qwen Code | `--yolo` |
+
 List every included shortcut and the command it launches:
 
 ```sh
