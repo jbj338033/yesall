@@ -29,7 +29,7 @@ export PATH="$HOME/.yesall/bin:$PATH"
 Set `YESALL_BIN_DIR` to choose another directory:
 
 ```sh
-YESALL_BIN_DIR=/usr/local/bin curl -fsSL https://raw.githubusercontent.com/jbj338033/yesall/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/jbj338033/yesall/main/install.sh | YESALL_BIN_DIR=/usr/local/bin sh
 ```
 
 The installer never overwrites an unmanaged file. Re-running it updates only files carrying the `yesall` marker.
