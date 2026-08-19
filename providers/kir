@@ -1,0 +1,9 @@
+#!/bin/sh
+# yesall:managed
+# yesall:kind=provider
+# yesall:name=Kiro CLI
+# yesall:binary=kiro-cli
+# yesall:prefix=chat --trust-all-tools
+# yesall:env=
+# yesall:source=https://kiro.dev/docs/cli/
+exec kiro-cli chat --trust-all-tools "$@"

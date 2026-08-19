@@ -1,0 +1,11 @@
+#!/bin/sh
+# yesall:managed
+# yesall:kind=provider
+# yesall:name=Goose
+# yesall:binary=goose
+# yesall:prefix=session
+# yesall:env=GOOSE_MODE=auto
+# yesall:source=https://block.github.io/goose/docs/guides/goose-cli/
+GOOSE_MODE=auto
+export GOOSE_MODE
+exec goose session "$@"

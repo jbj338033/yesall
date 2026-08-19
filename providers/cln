@@ -1,0 +1,9 @@
+#!/bin/sh
+# yesall:managed
+# yesall:kind=provider
+# yesall:name=Cline CLI
+# yesall:binary=cline
+# yesall:prefix=--yolo
+# yesall:env=
+# yesall:source=https://docs.cline.bot/getting-started/cli
+exec cline --yolo "$@"

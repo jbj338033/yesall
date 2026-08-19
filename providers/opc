@@ -1,0 +1,9 @@
+#!/bin/sh
+# yesall:managed
+# yesall:kind=provider
+# yesall:name=OpenCode
+# yesall:binary=opencode
+# yesall:prefix=
+# yesall:env=OPENCODE_CONFIG_CONTENT={"permission":{"*":"allow"}}
+# yesall:source=https://opencode.ai/docs/permissions/
+exec env 'OPENCODE_CONFIG_CONTENT={"permission":{"*":"allow"}}' opencode "$@"

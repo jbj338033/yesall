@@ -1,0 +1,9 @@
+#!/bin/sh
+# yesall:managed
+# yesall:kind=provider
+# yesall:name=Kimi Code
+# yesall:binary=kimi
+# yesall:prefix=--auto
+# yesall:env=
+# yesall:source=https://moonshotai.github.io/kimi-code/
+exec kimi --auto "$@"

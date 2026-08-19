@@ -1,0 +1,9 @@
+#!/bin/sh
+# yesall:managed
+# yesall:kind=provider
+# yesall:name=Codex CLI
+# yesall:binary=codex
+# yesall:prefix=--dangerously-bypass-approvals-and-sandbox
+# yesall:env=
+# yesall:source=https://learn.chatgpt.com/docs/agent-approvals-security
+exec codex --dangerously-bypass-approvals-and-sandbox "$@"

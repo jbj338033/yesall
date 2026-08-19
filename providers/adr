@@ -1,0 +1,9 @@
+#!/bin/sh
+# yesall:managed
+# yesall:kind=provider
+# yesall:name=Aider
+# yesall:binary=aider
+# yesall:prefix=--yes-always
+# yesall:env=
+# yesall:source=https://aider.chat/docs/config/options.html
+exec aider --yes-always "$@"

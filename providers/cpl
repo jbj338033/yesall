@@ -1,0 +1,9 @@
+#!/bin/sh
+# yesall:managed
+# yesall:kind=provider
+# yesall:name=GitHub Copilot CLI
+# yesall:binary=copilot
+# yesall:prefix=--allow-all-tools --allow-all-paths --allow-all-urls
+# yesall:env=
+# yesall:source=https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli
+exec copilot --allow-all-tools --allow-all-paths --allow-all-urls "$@"

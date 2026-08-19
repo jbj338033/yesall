@@ -1,0 +1,68 @@
+#!/bin/sh
+# yesall:managed
+set -eu
+
+self_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
+if [ -d "$self_dir/../providers" ]; then
+    provider_dir=$(CDPATH='' cd -- "$self_dir/../providers" && pwd)
+else
+    provider_dir=$self_dir
+fi
+
+field() {
+    key=$1
+    file=$2
+    sed -n "s/^# yesall:$key=//p" "$file"
+}
+
+list() {
+    printf '%-6s %-22s %s\n' SHORT NAME LAUNCH
+    for file in "$provider_dir"/*; do
+        [ -f "$file" ] || continue
+        [ "$(field kind "$file")" = provider ] || continue
+        shortcut=${file##*/}
+        name=$(field name "$file")
+        binary=$(field binary "$file")
+        prefix=$(field prefix "$file")
+        env_value=$(field env "$file")
+        launch=$binary
+        [ -n "$prefix" ] && launch="$launch $prefix"
+        [ -n "$env_value" ] && launch="$env_value $launch"
+        printf '%-6s %-22s %s\n' "$shortcut" "$name" "$launch"
+    done
+}
+
+doctor() {
+    status=0
+    for file in "$provider_dir"/*; do
+        [ -f "$file" ] || continue
+        [ "$(field kind "$file")" = provider ] || continue
+        shortcut=${file##*/}
+        name=$(field name "$file")
+        binary=$(field binary "$file")
+        if command -v "$binary" >/dev/null 2>&1; then
+            printf 'ok       %-6s %s\n' "$shortcut" "$name"
+        else
+            printf 'missing  %-6s %s (%s)\n' "$shortcut" "$name" "$binary"
+            status=1
+        fi
+    done
+    return "$status"
+}
+
+case ${1:-list} in
+    list)
+        list
+        ;;
+    doctor)
+        doctor
+        ;;
+    -h|--help|help)
+        printf 'Usage: yesall [list|doctor]\n'
+        ;;
+    *)
+        printf 'yesall: unknown command: %s\n' "$1" >&2
+        printf 'Usage: yesall [list|doctor]\n' >&2
+        exit 2
+        ;;
+esac

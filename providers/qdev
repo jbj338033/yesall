@@ -1,0 +1,9 @@
+#!/bin/sh
+# yesall:managed
+# yesall:kind=provider
+# yesall:name=Amazon Q Developer
+# yesall:binary=q
+# yesall:prefix=chat --trust-all-tools
+# yesall:env=
+# yesall:source=https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/command-line.html
+exec q chat --trust-all-tools "$@"

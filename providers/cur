@@ -1,0 +1,9 @@
+#!/bin/sh
+# yesall:managed
+# yesall:kind=provider
+# yesall:name=Cursor Agent
+# yesall:binary=cursor-agent
+# yesall:prefix=--force
+# yesall:env=
+# yesall:source=https://docs.cursor.com/en/cli/overview
+exec cursor-agent --force "$@"

@@ -1,0 +1,9 @@
+#!/bin/sh
+# yesall:managed
+# yesall:kind=provider
+# yesall:name=Qwen Code
+# yesall:binary=qwen
+# yesall:prefix=--yolo
+# yesall:env=
+# yesall:source=https://qwenlm.github.io/qwen-code-docs/en/cli/cli-usage/
+exec qwen --yolo "$@"

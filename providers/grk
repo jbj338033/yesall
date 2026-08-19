@@ -1,0 +1,9 @@
+#!/bin/sh
+# yesall:managed
+# yesall:kind=provider
+# yesall:name=Grok Build
+# yesall:binary=agent
+# yesall:prefix=--permission-mode bypassPermissions
+# yesall:env=
+# yesall:source=agent --help
+exec agent --permission-mode bypassPermissions "$@"

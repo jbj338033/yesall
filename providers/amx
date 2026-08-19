@@ -1,0 +1,9 @@
+#!/bin/sh
+# yesall:managed
+# yesall:kind=provider
+# yesall:name=Amp
+# yesall:binary=amp
+# yesall:prefix=--dangerously-allow-all
+# yesall:env=
+# yesall:source=https://ampcode.com/manual
+exec amp --dangerously-allow-all "$@"
