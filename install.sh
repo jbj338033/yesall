@@ -52,6 +52,12 @@ install_one() {
     installed=$((installed + 1))
 }
 
+field() {
+    key=$1
+    file=$2
+    sed -n "s/^# yesall:$key=//p" "$file"
+}
+
 install_one "$source_dir/bin/yesall"
 for provider in "$source_dir"/providers/*; do
     [ -f "$provider" ] || continue
@@ -60,10 +66,20 @@ for provider in "$source_dir"/providers/*; do
 done
 
 printf 'yesall: installed %s commands in %s\n' "$installed" "$bin_dir"
+printf '\nAvailable commands:\n'
+for provider in "$source_dir"/providers/*; do
+    [ -f "$provider" ] || continue
+    grep -q '^# yesall:kind=provider$' "$provider" || continue
+    name=${provider##*/}
+    if is_managed "$bin_dir/$name"; then
+        printf '  %-5s %s\n' "$name" "$(field name "$provider")"
+    fi
+done
 case :${PATH:-}: in
     *:"$bin_dir":*) ;;
     *)
-        printf 'yesall: add %s to PATH\n' "$bin_dir" >&2
+        printf '\nyesall: add this to your current shell:\n' >&2
+        printf "  export PATH=\"\$HOME/.yesall/bin:\$PATH\"\n" >&2
         ;;
 esac
 
