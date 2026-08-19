@@ -3,6 +3,8 @@ set -eu
 
 bin_dir=${YESALL_BIN_DIR:-$HOME/.yesall/bin}
 marker='# yesall:managed'
+path_begin='# yesall:path begin'
+path_end='# yesall:path end'
 status=0
 installed=0
 script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
@@ -58,6 +60,36 @@ field() {
     sed -n "s/^# yesall:$key=//p" "$file"
 }
 
+configure_path() {
+    [ "${YESALL_BIN_DIR+x}" = x ] && return
+
+    case ${SHELL##*/} in
+        zsh) path_file=$HOME/.zshrc ;;
+        bash) path_file=$HOME/.bashrc ;;
+        *) path_file= ;;
+    esac
+
+    case :${PATH:-}: in
+        *:"$bin_dir":*) return ;;
+    esac
+
+    if [ -n "$path_file" ]; then
+        touch "$path_file"
+        if ! grep -Fq "$path_begin" "$path_file"; then
+            {
+                printf '\n%s\n' "$path_begin"
+                printf "export PATH=\"%s:\$PATH\"\n" "$bin_dir"
+                printf '%s\n' "$path_end"
+            } >>"$path_file"
+        fi
+        printf 'yesall: added %s to %s\n' "$bin_dir" "$path_file" >&2
+        printf 'yesall: run: source %s\n' "$path_file" >&2
+    else
+        printf 'yesall: add this to your shell:\n' >&2
+        printf "  export PATH=\"%s:\$PATH\"\n" "$bin_dir" >&2
+    fi
+}
+
 install_one "$source_dir/bin/yesall"
 for provider in "$source_dir"/providers/*; do
     [ -f "$provider" ] || continue
@@ -75,12 +107,6 @@ for provider in "$source_dir"/providers/*; do
         printf '  %-5s %s\n' "$name" "$(field name "$provider")"
     fi
 done
-case :${PATH:-}: in
-    *:"$bin_dir":*) ;;
-    *)
-        printf '\nyesall: add this to your current shell:\n' >&2
-        printf "  export PATH=\"\$HOME/.yesall/bin:\$PATH\"\n" >&2
-        ;;
-esac
+configure_path
 
 exit "$status"

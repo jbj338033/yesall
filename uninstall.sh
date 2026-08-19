@@ -3,6 +3,8 @@ set -eu
 
 bin_dir=${YESALL_BIN_DIR:-$HOME/.yesall/bin}
 marker='# yesall:managed'
+path_begin='# yesall:path begin'
+path_end='# yesall:path end'
 removed=0
 script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 provider_dir=
@@ -35,11 +37,33 @@ remove_name() {
     fi
 }
 
+remove_path_config() {
+    [ "${YESALL_BIN_DIR+x}" = x ] && return
+
+    case ${SHELL##*/} in
+        zsh) path_file=$HOME/.zshrc ;;
+        bash) path_file=$HOME/.bashrc ;;
+        *) return ;;
+    esac
+    [ -f "$path_file" ] || return
+    grep -Fq "$path_begin" "$path_file" || return
+
+    temp_file=$(mktemp "${path_file}.yesall.XXXXXX")
+    awk -v begin="$path_begin" -v end="$path_end" '
+        $0 == begin { skip = 1; next }
+        $0 == end { skip = 0; next }
+        !skip { print }
+    ' "$path_file" >"$temp_file"
+    mv "$temp_file" "$path_file"
+    printf 'yesall: removed %s from %s\n' "$bin_dir" "$path_file"
+}
+
 remove_name yesall
 for provider in "$provider_dir"/*; do
     [ -f "$provider" ] || continue
     grep -q '^# yesall:kind=provider$' "$provider" || continue
     remove_name "${provider##*/}"
 done
+remove_path_config
 
 printf 'yesall: removed %s commands from %s\n' "$removed" "$bin_dir"

@@ -108,4 +108,15 @@ YESALL_BIN_DIR="$collision_bin" "$repo_dir/uninstall.sh" >/dev/null
 [ "$(cat "$collision_bin/cld")" = 'user file' ] || fail 'uninstall preservation'
 [ ! -e "$collision_bin/cdx" ] || fail 'managed collision-set removal'
 
+config_home=$test_dir/config-home
+mkdir -p "$config_home"
+HOME="$config_home" SHELL=/bin/zsh PATH="$fake_bin:/usr/bin:/bin" "$repo_dir/install.sh" >/dev/null 2>&1
+grep -F '# yesall:path begin' "$config_home/.zshrc" >/dev/null || fail 'path configuration'
+HOME="$config_home" SHELL=/bin/zsh PATH="$fake_bin:/usr/bin:/bin" "$repo_dir/install.sh" >/dev/null 2>&1
+[ "$(grep -Fc '# yesall:path begin' "$config_home/.zshrc")" -eq 1 ] || fail 'path configuration idempotence'
+HOME="$config_home" SHELL=/bin/zsh PATH="$fake_bin:/usr/bin:/bin" "$repo_dir/uninstall.sh" >/dev/null 2>&1
+if grep -Fq '# yesall:path begin' "$config_home/.zshrc"; then
+    fail 'path configuration removal'
+fi
+
 printf 'PASS: yesall\n'
