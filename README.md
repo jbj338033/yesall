@@ -15,21 +15,21 @@ These commands deliberately reduce or remove approval checks. Use them only wher
 One-line install from GitHub:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/jbj338033/yesall/main/bootstrap.sh | sh
+curl -fsSL https://raw.githubusercontent.com/jbj338033/yesall/main/install.sh | sh
 ```
 
-This is a `curl | sh` installer: it downloads the tagged repository archive to a temporary directory, then runs the repository's normal installer. Review `bootstrap.sh` before using it in a new environment.
+This is a `curl | sh` installer. It fetches the command wrappers directly from `raw.githubusercontent.com`; no clone or local checkout is required. Review `install.sh` before using it in a new environment.
 
-For a checked-out install:
+Commands are installed into `~/.yesall/bin`. Add it to your current shell's PATH:
 
 ```sh
-./install.sh
+export PATH="$HOME/.yesall/bin:$PATH"
 ```
 
-Commands are installed into `${XDG_BIN_HOME:-$HOME/.local/bin}`. Set `YESALL_BIN_DIR` to choose another directory:
+Set `YESALL_BIN_DIR` to choose another directory:
 
 ```sh
-YESALL_BIN_DIR=/usr/local/bin ./install.sh
+YESALL_BIN_DIR=/usr/local/bin curl -fsSL https://raw.githubusercontent.com/jbj338033/yesall/main/install.sh | sh
 ```
 
 The installer never overwrites an unmanaged file. Re-running it updates only files carrying the `yesall` marker.
@@ -48,18 +48,12 @@ Check which underlying CLIs are installed:
 yesall doctor
 ```
 
-The provider files are the source of truth, so `yesall list` stays current without maintaining a separate registry. Gemini CLI is intentionally not included.
+The provider files are the source of truth, and `providers/index` lets the raw installer fetch them without cloning the repository. Gemini CLI is intentionally not included.
 
 ## Uninstall
 
 ```sh
-./uninstall.sh
-```
-
-Or from anywhere:
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/jbj338033/yesall/main/bootstrap.sh | sh -s -- uninstall
+curl -fsSL https://raw.githubusercontent.com/jbj338033/yesall/main/uninstall.sh | sh
 ```
 
 Only files carrying the `yesall` marker are removed.

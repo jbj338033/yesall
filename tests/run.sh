@@ -32,6 +32,7 @@ FAKE
 chmod 755 "$fake_command"
 
 for provider in "$repo_dir"/providers/*; do
+    grep -q '^# yesall:kind=provider$' "$provider" || continue
     sh -n "$provider"
     binary=$(field binary "$provider")
     [ -e "$fake_bin/$binary" ] || ln -s "$fake_command" "$fake_bin/$binary"
@@ -41,6 +42,7 @@ sh -n "$repo_dir/install.sh"
 sh -n "$repo_dir/uninstall.sh"
 
 for provider in "$repo_dir"/providers/*; do
+    grep -q '^# yesall:kind=provider$' "$provider" || continue
     binary=$(field binary "$provider")
     prefix=$(field prefix "$provider")
     env_value=$(field env "$provider")

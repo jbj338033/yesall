@@ -1,11 +1,28 @@
 #!/bin/sh
 set -eu
 
-repo_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
-bin_dir=${YESALL_BIN_DIR:-"${XDG_BIN_HOME:-$HOME/.local/bin}"}
+bin_dir=${YESALL_BIN_DIR:-$HOME/.yesall/bin}
 marker='# yesall:managed'
 status=0
 installed=0
+script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
+source_dir=
+tmp_dir=
+
+if [ -f "$script_dir/bin/yesall" ] && [ -d "$script_dir/providers" ]; then
+    source_dir=$script_dir
+else
+    raw_base=${YESALL_RAW_BASE:-https://raw.githubusercontent.com/jbj338033/yesall/main}
+    tmp_dir=$(mktemp -d "${TMPDIR:-/tmp}/yesall-install.XXXXXX")
+    trap 'rm -rf "$tmp_dir"' EXIT HUP INT TERM
+    source_dir=$tmp_dir/repo
+    mkdir -p "$source_dir/bin" "$source_dir/providers"
+    curl -fsSL "$raw_base/bin/yesall" -o "$source_dir/bin/yesall"
+    curl -fsSL "$raw_base/providers/index" | while IFS= read -r shortcut; do
+        [ -n "$shortcut" ] || continue
+        curl -fsSL "$raw_base/providers/$shortcut" -o "$source_dir/providers/$shortcut"
+    done
+fi
 
 mkdir -p "$bin_dir"
 
@@ -35,9 +52,10 @@ install_one() {
     installed=$((installed + 1))
 }
 
-install_one "$repo_dir/bin/yesall"
-for provider in "$repo_dir"/providers/*; do
+install_one "$source_dir/bin/yesall"
+for provider in "$source_dir"/providers/*; do
     [ -f "$provider" ] || continue
+    grep -q '^# yesall:kind=provider$' "$provider" || continue
     install_one "$provider"
 done
 
